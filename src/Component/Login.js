@@ -1,9 +1,21 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../Utils/Validation";
 
 const Login = () => {
   const [isSigninForm, setIsSigninForm] = useState(true);
-
+  const [errorMessage, setErrorMessage] = useState(null);
+  const fname = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+  const handleSignInBtn = () => {
+    const message = checkValidData(
+      email.current.value,
+      password.current.value,
+      fname.current.value
+    );
+    setErrorMessage(message);
+  };
   const handleSigninForm = () => {
     setIsSigninForm(!isSigninForm);
   };
@@ -16,32 +28,44 @@ const Login = () => {
           alt="background"
         />
       </div>
-      <form className="absolute p-8 w-3/12 my-36 mx-auto right-0 left-0 text-white bg-black bg-opacity-80">
+      <form
+        className="absolute p-8 w-3/12 my-36 mx-auto right-0 left-0 text-white bg-black bg-opacity-80"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <h1 className="font-bold text-3xl py-4">
           {isSigninForm ? "Sign In" : "Sign Up"}
         </h1>
         {!isSigninForm && (
           <input
+            ref={fname}
             type="text"
             placeholder="Full Name"
             className="p-3 my-4 w-full bg-gray-700 rounded-lg"
           />
         )}
         <input
+          ref={email}
           type="text"
           placeholder="Email Address"
           className="p-3 my-4 w-full bg-gray-700 rounded-lg"
         />
         <input
+          ref={password}
           type="password"
           placeholder="password"
           className="p-3 my-4 w-full bg-gray-700 rounded-lg"
         />
-        <button className="p-3 my-4 bg-red-700 w-full rounded-lg">
-        {isSigninForm ? "Sign In" : "Sign Up"}
+        <p className="text-red-500 font-bold text-sm py-2">{errorMessage}</p>
+        <button
+          className="p-3 my-4 bg-red-700 w-full rounded-lg"
+          onClick={handleSignInBtn}
+        >
+          {isSigninForm ? "Sign In" : "Sign Up"}
         </button>
         <p className="py-4 cursor-pointer" onClick={handleSigninForm}>
-        {isSigninForm
+          {isSigninForm
             ? "New to Netflx? Sign Up"
             : "Already registered? Sign In"}
         </p>
